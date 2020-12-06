@@ -1,7 +1,5 @@
 import jdk.internal.net.http.common.Pair;
 
-
-
 public class Robots {
     final private String _nameBot="Bot Bob";
     private String _robotsUrl;
@@ -17,11 +15,6 @@ public class Robots {
     {
         
     }
-
-
-
-
-
 
 
 }
