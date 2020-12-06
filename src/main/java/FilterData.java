@@ -16,7 +16,6 @@ public class FilterData {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    // System.out.println("directory:" + file.getCanonicalPath());
                     FilterByExtensionRecursive(file, _Extension);
                 } else {
                     if (file.getName().endsWith(_Extension)) {
@@ -34,7 +33,6 @@ public class FilterData {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    //System.out.println("directory:" + file.getCanonicalPath());
                     FilterByDimensionsRecursive(file,_Limit,_LimitType);
                 } else {
                     long bytes = file.length();
@@ -75,7 +73,6 @@ public class FilterData {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    //System.out.println("directory:" + file.getCanonicalPath());
                     FilterByDimensionsRecursive(file,_Limit, _LimitType);
                 } else {
                     long bytes = file.length();
@@ -115,7 +112,6 @@ public class FilterData {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    //System.out.println("directory:" + file.getCanonicalPath());
                     FilterByWordsRecursive(_Words,file);
                 } else {
                     if(file.getName().indexOf(_Words)!=-1)
@@ -173,7 +169,6 @@ public class FilterData {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    //System.out.println("directory:" + file.getCanonicalPath());
                     FilterByExtensionRecursive(file, _Extension);
                 } else {
                     if (file.getName().endsWith(_Extension)) {
