@@ -6,7 +6,7 @@ public class main {
 
         DataDownloader tester=new DataDownloader();
         tester._mDownload("http://www.google.com");
-        FilterData filtrare=new FilterData("D:\\anul4\\ingprog\\tema git\\Tema-laborator");
-        filtrare.FilterByExtension(".java");
+        FilterData filtrate=new FilterData("D:\\anul4",1);
+        filtrate.FilterByExtension(".txt");
     }
 }
