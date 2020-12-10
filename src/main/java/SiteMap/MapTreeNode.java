@@ -3,7 +3,6 @@ package SiteMap;
 import javax.naming.BinaryRefAddr;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class MapTreeNode {
     public String url;
@@ -47,5 +46,4 @@ public class MapTreeNode {
     public List<MapTreeNode> GetChildren(){
         return childNodes;
     }
-
 }

@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class SiteMapGenerator {
     private String baseUrl;

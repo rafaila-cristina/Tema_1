@@ -1,8 +1,5 @@
 package SiteMap;
 
-import java.util.List;
-import java.util.StringTokenizer;
-
 public class SiteMapTree {
     private MapTreeNode root;
 
