@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class SiteMapGenerator {
     private String baseUrl;
@@ -49,6 +50,13 @@ public class SiteMapGenerator {
         // ==> (c) -> (1) -> (abcd)
         //                -> (aef)
         //                -> (tyu)
+
+        for (int i=0; i<urls.size(); i++){
+            siteMapTree.addNode(urls.get(i));
+        }
+
+        //TODO: generam toate URL-urile pe baza arborelui curent
+        // pentru fiecare URL creez sitemap-ul si facem merge intre sitemap-uri
 
         return siteMapTree;
     }
