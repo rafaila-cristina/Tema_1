@@ -12,7 +12,7 @@ public class SiteMapParser {
         dictionary.put(1, "h");
         dictionary.put(2, "/");
         dictionary.put(3, "#");
-        dictionary.put(4, "");
+        //dictionary.put(4, "https://");
         int ok;
 
         for (int i=0; i<htmlString.length(); i++){
@@ -28,25 +28,26 @@ public class SiteMapParser {
                         k++;
                     }
 
-                    String newUrl = htmlString.substring(j+7,j+6+k);
-                    int endIndex = newUrl.indexOf('?');
-                    if(endIndex > 0)
-                        newUrl = newUrl.substring(0, endIndex);
+                    String newUrl = htmlString.substring(j+6,j+6+k);
                     ok=0;
 
                     for (Enumeration counter = dictionary.elements(); counter.hasMoreElements();)
-                        if(newUrl.equals(counter.nextElement())) {       //verify dictionary
+                        if(newUrl.equals(counter.nextElement())) {  //verify dictionary
                             ok=1;
                             break;
                         }
 
-                    if (ok==0) {     //if nothing found in dictionary then add url to result
-                        if (result.size() > 4000)     // Debugging pruposes
+                    //TODO: verify list for duplicates when creating it
+                    //TODO: remove "https://" from result
+                    if (ok==0){     //if nothing found in dictionary then add url to result
+                        if (result.size() > 100)     // Debugging pruposes
                             return result;
+
 
                         result.add(newUrl);
                     }
                 }
+
             }
         }
 

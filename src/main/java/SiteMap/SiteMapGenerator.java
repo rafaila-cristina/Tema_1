@@ -50,13 +50,6 @@ public class SiteMapGenerator {
         //                -> (aef)
         //                -> (tyu)
 
-        for (int i=0; i<urls.size(); i++){
-            siteMapTree.addNode(urls.get(i));
-        }
-
-        //TODO: generam toate URL-urile pe baza arborelui curent
-        // pentru fiecare URL creez sitemap-ul si facem merge intre sitemap-uri
-
         return siteMapTree;
     }
 
