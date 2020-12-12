@@ -122,8 +122,8 @@ public class InputData {
         } else if (this._mArgs[0].equals("sitemap")) {
             if (this._mArgs.length >= 2) {
                 try {
-                    SiteMapGenerator var5 = new SiteMapGenerator(this._mArgs[1]);
-                    SiteMapTree var2 = var5.GenerateSiteMap();
+                    SiteDownloader tester=new SiteDownloader();
+                    tester._mFullStateDownload(_mArgs[1]);
                 } catch (Exception var3) {
                     System.out.println("Wrong format");
                     System.out.println("Form: sitemap \"URL\"");
