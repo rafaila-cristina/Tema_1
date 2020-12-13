@@ -2,7 +2,7 @@ import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SiteDownloader {
+public class SiteDownloader extends Thread {
     private ArrayList<String> _mDependent=new ArrayList<String>();
     private ArrayList<String> _mVisited=new ArrayList<String>();
 
@@ -21,15 +21,7 @@ public class SiteDownloader {
         return;
     }
 
-    private void printDependent(){
-        int i;
-        for (i=0;i<this._mDependent.size();i++){
-            System.out.println(this._mDependent.get(i));
-        }
-        return;
-    }
-
-    private void _mAddArrayList(ArrayList<String> _inList){
+    private void _mAddDependencyList(ArrayList<String> _inList){
         int i;
         for (i=0;i<_inList.size();i++){
             this._mDependent.add(_inList.get(i));
@@ -45,25 +37,29 @@ public class SiteDownloader {
     public void _mFullStateDownload(String _inPage) throws IOException {
         DataDownloader initialScripter=new DataDownloader();
         initialScripter._mDownload(_inPage);
-        this._mAddArrayList(initialScripter._mGetDeppendencies());
+        this._mAddDependencyList(initialScripter._mGetDeppendencies());
         this._mAddVisited(_inPage);
         initialScripter=null;
         System.out.println(this._mDependent.size());
 
-        int i;
+        int i,j;
+        int threads=4;
         int limit=15;
-        for (i=0;i<this._mDependent.size();i++){
-            if (i==15){
+        for (i=0;i<this._mDependent.size();i+=threads){
+            if (i>15){
                 break;
             }
-            if (!this._mVisited.contains(this._mDependent.get(i))) {
-                DataDownloader tempObj = new DataDownloader();
-                tempObj._mDownload(this._mDependent.get(i));
-                this._mAddArrayList(tempObj._mGetDeppendencies());
-                this._mRemoveDuplicates();
-                this._mAddVisited(this._mDependent.get(i));
-                System.out.println(this._mDependent.size());
-                tempObj = null;
+            for (j=0;j<threads;j++) {
+                if (!this._mVisited.contains(this._mDependent.get(i+j))) {
+                    ThreadDownloader _innerThread = new ThreadDownloader();
+                    _innerThread._mRun(this._mDependent.get(i));
+
+                    this._mAddDependencyList(_innerThread._mGetDependent());
+                    this._mRemoveDuplicates();
+                    this._mAddVisited(this._mDependent.get(i));
+                    System.out.println(this._mDependent.size());
+                    _innerThread = null;
+                }
             }
         }
         return;
