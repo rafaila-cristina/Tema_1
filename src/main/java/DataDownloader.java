@@ -107,21 +107,28 @@ public class DataDownloader {
     }
 
     private void _mTrackDependent(String _mContent){
-        int i;
+        int i,j;
         for (i=0;i<this._mBeginning.length;i++) {
             String buff="";
             int start=this._mBeginning[i];
-            int counter=0;
-            while (counter<=2) {
-                if(_mContent.charAt(start)=='/' || _mContent.charAt(start)=='"' || _mContent.charAt(start)==' ' || _mContent.charAt(start)=='\''){
-                    counter++;
-                }
+            while (_mContent.charAt(start)!='\'' && _mContent.charAt(start)!='"' && _mContent.charAt(start)!=' ' && _mContent.charAt(start)!='<' && _mContent.charAt(start)!='>'){
                 buff+=_mContent.charAt(start);
                 start++;
             }
-            String result=buff.substring(0,buff.length()-1);
-            this._mDependencies.add(result);
+            int counter=0;
+            for (j=0;j<buff.length();j++){
+                if(buff.charAt(j)=='/'){
+                    counter++;
+                }
+            }
+            if (counter>2) {
+                String lastToken = buff.substring(buff.lastIndexOf("/") + 1);
+                if (!lastToken.contains(".")){
+                    this._mDependencies.add(buff);
+                }
+            }
         }
+        return;
     }
 
     private void _mTrackFiles(String _mContent){
@@ -137,14 +144,6 @@ public class DataDownloader {
             String result=buff.substring(0,buff.length()-1);
             this._mFiles.add(result);
         }
-    }
-
-    private void _mFilesPrint(){
-        int i;
-        for (i=0;i<this._mFiles.size();i++){
-            System.out.println(this._mFiles.get(i));
-        }
-        return;
     }
 
     private static int[] addPosition(int _inSize, int[] _inArr, int _inAdder){
@@ -451,6 +450,7 @@ public class DataDownloader {
                 this._mTrackFiles(content);
                 this._mRemoveDuplicates();
                 this._mORGRemover();
+                this._mDependenciesPrint();
 
                 this._mAddImage();
                 this._mAddXML();
