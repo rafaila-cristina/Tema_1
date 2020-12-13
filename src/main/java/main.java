@@ -15,5 +15,19 @@ public class main {
     //    FilterData filtrare=new FilterData("D:\\anul4\\ingprog\\tema git\\Tema-laborator");
     //    filtrare.FilterByExtension(".java");
 
+        if(args.length>0)
+        {
+            InputData input=new InputData(args);
+            input.Process();
+        }
+        else
+        {
+            System.out.println("Choose one option:");
+            System.out.println("  crowler");
+            System.out.println("  extension");
+            System.out.println("  search");
+            System.out.println("  limit");
+            System.out.println("  sitemap");
+        }
     }
 }
