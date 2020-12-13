@@ -1,9 +1,16 @@
 import SiteMap.SiteMapGenerator;
 import SiteMap.SiteMapTree;
 import java.io.IOException;
+import java.util.List;
+import java.io.File;  // Import the File class
+import java.io.FileNotFoundException;  // Import this class to handle errors
+import java.util.Scanner;
 
 public class InputData {
     String[] _mArgs;
+    String _mURL;
+    int _mNrThreads;
+    int _mLimit;
 
     public InputData(String[] var1) {
         this._mArgs = var1;
@@ -25,6 +32,28 @@ public class InputData {
         System.out.println(var1);
         System.out.println("");
         System.out.println("Where -t is optional for multithreading");
+    }
+
+    private void ReadFromFile(String _filepath)
+    {
+        try {
+            File myObj = new File(_filepath);
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                String[] words=data.split("=");
+                if(words[0].equals("n_threads"))
+                    this._mNrThreads=Integer.parseInt(words[1]);
+                else if(words[0].equals("URL"))
+                    this._mURL=words[1];
+                else if(words[0].equals("limit"))
+                    this._mLimit=Integer.parseInt(words[1]);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     private void Filter(String var1) {
@@ -103,15 +132,25 @@ public class InputData {
         if (this._mArgs[0].equals("crowler")) {
             if (this._mArgs.length == 2) {
                 try {
-                    SiteDownloader tester=new SiteDownloader();
-                    tester._mFullStateDownload(_mArgs[1]);
+                    ReadFromFile(_mArgs[1]);
+                    if (_mURL!=null && _mLimit!=0 && _mNrThreads!=0)
+                    {
+                        SiteDownloader tester=new SiteDownloader();
+                        tester._mFullStateDownload(_mURL,_mNrThreads,_mLimit);
+                    }
+                    else
+                    {
+                        System.out.println("Fisier de configurare gresit sau inexistent");
+                    }
+
                 } catch (Exception var4) {
-                    System.out.println("Add one URL");
-                    System.out.println("Exemple: crowler \"http://www.google.com\"");
+                    System.out.println("Something went wrong");
+                    System.out.println("Add configure file");
+                    System.out.println("Exemple: crowler file.conf");
                 }
             } else {
-                System.out.println("Add one URL");
-                System.out.println("Exemple: crowler \"http://www.google.com\"");
+                System.out.println("Add configure file");
+                System.out.println("Exemple: crowler file.conf");
             }
         } else if (this._mArgs[0].equals("extension")) {
             this.Filter(this._mArgs[0]);
@@ -122,10 +161,10 @@ public class InputData {
         } else if (this._mArgs[0].equals("sitemap")) {
             if (this._mArgs.length >= 2) {
                 try {
-                    SiteMapGenerator siteMapGenerator  = new SiteMapGenerator(_mArgs[1]);
-                    SiteMapTree siteMap;
-                    siteMap = siteMapGenerator.GenerateSiteMap();
+                    SiteMapGenerator siteMapGenerator = new SiteMapGenerator();
+                    List<String> siteUrls = siteMapGenerator.GenerateSiteMap( _mArgs[1]);
                 } catch (Exception var3) {
+                    System.out.println("Something went wrong");
                     System.out.println("Wrong format");
                     System.out.println("Form: sitemap \"URL\"");
                 }
