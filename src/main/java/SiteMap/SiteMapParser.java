@@ -5,8 +5,7 @@ import java.util.Dictionary;
 import java.util.*;
 
 public class SiteMapParser {
-    public static List<String> GetAllUrls(String htmlString){
-        List<String> result = new ArrayList<String>();
+    public static void GetAllUrls(Map<String, String> urls, String htmlString){
 
         Dictionary dictionary = new Hashtable();        //dictionary
         dictionary.put(1, "h");
@@ -29,6 +28,7 @@ public class SiteMapParser {
                     }
 
                     String newUrl = htmlString.substring(j+7,j+6+k);
+                    i = j + 6 + k;
                     int endIndex = newUrl.indexOf('?');
                     if(endIndex > 0)
                         newUrl = newUrl.substring(0, endIndex);
@@ -41,16 +41,16 @@ public class SiteMapParser {
                         }
 
                     if (ok==0) {     //if nothing found in dictionary then add url to result
-                        if (result.size() > 4000)     // Debugging pruposes
-                            return result;
 
-                        result.add(newUrl);
+
+                        if (urls.size() > 400)     // Debugging pruposes
+                            return;
+
+                        urls.put(newUrl, newUrl);
                     }
                 }
             }
         }
-
-        return result;
     }
 
 

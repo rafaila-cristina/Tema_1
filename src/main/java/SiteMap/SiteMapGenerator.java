@@ -1,5 +1,6 @@
 package SiteMap;
 
+import javax.print.DocFlavor;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,20 +8,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
+import java.util.*;
 
 public class SiteMapGenerator {
-    private String baseUrl;
     private SiteMapTree siteMapTree;
 
-    public SiteMapGenerator(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public SiteMapTree GenerateSiteMap() throws IOException {
-        siteMapTree = new SiteMapTree(baseUrl);
-
-        //send request to baseUrl
+    public String DownloadPage(String baseUrl) throws IOException{        //send request to baseUrl
         String bodyString = "";
         URL url = new URL(baseUrl);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -36,28 +29,44 @@ public class SiteMapGenerator {
         }
 
         bodyString = stringBuffer.toString();
+        return bodyString;
+    }
 
-        List<String> urls;
-        urls = SiteMapParser.GetAllUrls(bodyString);
+    public void GenerateAllUrls(Map<String, String> urls, String currentUrl, String baseUrl, int startIndex) throws IOException {
+        if(startIndex < urls.size())
+            return;
 
-        // for in urls
-        // create a new TreeNode with every url
-        // add every new TreeNode to siteMapTree
-        // /c/1/abcd
-        // /c/1/aef
-        // /c/1/tyu
-        // ==> (c) -> (1) -> (abcd)
-        //                -> (aef)
-        //                -> (tyu)
+        SiteMapParser.GetAllUrls(urls, DownloadPage(baseUrl + currentUrl));
 
-        for (int i=0; i<urls.size(); i++){
-            siteMapTree.addNode(urls.get(i));
+        System.out.println("Urls list size = " + urls.size());
+        for (int i=startIndex; i < urls.size(); i++)
+            GenerateAllUrls(urls, urls.get(i), baseUrl, i + 1);
+    }
+
+    /**
+     *
+     * @param baseUrl
+     * @return O lista cu toate url-urile
+     * @throws IOException
+     */
+
+    public List<String> GenerateSiteMap(String baseUrl) throws IOException {
+        siteMapTree = new SiteMapTree(baseUrl);
+
+        Map<String, String> mapUrls = new HashMap<String, String>();
+        GenerateAllUrls(mapUrls, "", baseUrl, 0);
+
+        List<String> urls = new ArrayList<String>();
+
+        Iterator it = mapUrls.entrySet().iterator();
+        while(it.hasNext())
+        {
+            Map.Entry pair = (Map.Entry)it.next();
+            urls.add(baseUrl + pair.getValue());
         }
 
-        //TODO: generam toate URL-urile pe baza arborelui curent
-        // pentru fiecare URL creez sitemap-ul si facem merge intre sitemap-uri
 
-        return siteMapTree;
+        return new ArrayList(urls);
     }
 
 }
