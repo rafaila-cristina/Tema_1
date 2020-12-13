@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.StringTokenizer;
 
 import java.nio.file.Files;
@@ -423,11 +424,24 @@ public class DataDownloader {
 
     public void _mDownload(String urlString) throws IOException {
         try {
+            int restrict_flag;
+            Vector<String> restrictor=new Vector<String>();
             System.out.println("Downloading " + urlString + " ...");
             URL url = new URL(urlString);
+            try {
+                Robots defRestrictor = new Robots();
+                defRestrictor.createRobotsUrl(url);
+                defRestrictor.readRobotsTxt();
+                restrictor = defRestrictor.getString();
+                restrict_flag=1;
+            }catch(Exception e){
+                System.out.println("The speciefied URL does not contain a robots.txt");
+                restrict_flag=0;
+            }
+
             String content = "";
             String title = this.titleCreator(urlString);
-            int i;
+            int i,j;
             try (
                     BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     BufferedWriter writer = new BufferedWriter(new FileWriter(title));
@@ -450,17 +464,59 @@ public class DataDownloader {
                 this._mTrackFiles(content);
                 this._mRemoveDuplicates();
                 this._mORGRemover();
-                this._mDependenciesPrint();
 
                 this._mAddImage();
                 this._mAddXML();
                 this._mAddPDF();
                 this._mAddAudio();
 
-                this._mImagesPrint();
-                this._mXMLPrint();
-                this._mPDFPrint();
-                this._mAudioPrint();
+                if (restrict_flag==1){
+                    if (restrictor.get(0)=="/"){
+                        this._mDependencies.clear();
+                        this._mAudio.clear();
+                        this._mImages.clear();
+                        this._mXML.clear();
+                        this._mPDF.clear();
+                        System.out.println("Robots.txt blocked the download of the dependencies");
+                    }
+                    if (restrictor.get(0)=="0"){
+                        System.out.println("No restriction imposed by Robots.txt. All clear for download");
+                    }
+                    if (restrictor.get(0)!="/" && restrictor.get(0)!="0"){
+                        for (i=0;i<restrictor.size();i++){
+                            for (j=0;j<this._mDependencies.size();j++){
+                                if (this._mDependencies.get(j).contains(restrictor.get(i))){
+                                    this._mDependencies.remove(j);
+                                }
+                            }
+                            for (j=0;j<this._mAudio.size();j++){
+                                if (this._mAudio.get(j).contains(restrictor.get(i))){
+                                    this._mAudio.remove(j);
+                                }
+                            }
+                            for (j=0;j<this._mImages.size();j++){
+                                if (this._mImages.get(j).contains(restrictor.get(i))){
+                                    this._mImages.remove(j);
+                                }
+                            }
+                            for (j=0;j<this._mXML.size();j++){
+                                if (this._mXML.get(j).contains(restrictor.get(i))){
+                                    this._mXML.remove(j);
+                                }
+                            }
+                            for (j=0;j<this._mPDF.size();j++){
+                                if (this._mPDF.get(j).contains(restrictor.get(i))){
+                                    this._mPDF.remove(j);
+                                }
+                            }
+                        }
+                        System.out.println("There were some dependencies that were not allowed by Robots.txt");
+                    }
+                }
+                System.out.println("\n===============================");
+                System.out.println("Downloading files...");
+                System.out.println("===============================");
+                this._mDependenciesPrint();
 
                 if (this._mImages.size() != 0) {
                     this._mImagesDownload();

@@ -34,7 +34,7 @@ public class SiteDownloader extends Thread {
         return;
     }
 
-    public void _mFullStateDownload(String _inPage) throws IOException {
+    public void _mFullStateDownload(String _inPage, int _inThreads, int _inLimit) throws IOException {
         DataDownloader initialScripter=new DataDownloader();
         initialScripter._mDownload(_inPage);
         this._mAddDependencyList(initialScripter._mGetDeppendencies());
@@ -43,13 +43,11 @@ public class SiteDownloader extends Thread {
         System.out.println(this._mDependent.size());
 
         int i,j;
-        int threads=4;
-        int limit=15;
-        for (i=0;i<this._mDependent.size();i+=threads){
-            if (i>15){
+        for (i=0;i<this._mDependent.size();i+=_inThreads){
+            if (i>_inLimit){
                 break;
             }
-            for (j=0;j<threads;j++) {
+            for (j=0;j<_inThreads;j++) {
                 if (!this._mVisited.contains(this._mDependent.get(i+j))) {
                     ThreadDownloader _innerThread = new ThreadDownloader();
                     _innerThread._mRun(this._mDependent.get(i));
