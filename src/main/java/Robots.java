@@ -8,7 +8,7 @@ import java.util.Vector;
 public class Robots {
     final private String _nameBot = "Bot Bob";
     private URL _robotsUrl;
-    private Vector<String> _vDisallow;
+    private Vector<String> _vDisallow=new Vector<String>();
     private int _delay=-1;
 
     void createRobotsUrl(URL _url) throws MalformedURLException {
@@ -18,7 +18,6 @@ public class Robots {
     void readRobotsTxt() throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(this._robotsUrl.openStream()));
         String line;
-
 
         while ((line = in.readLine()) != null)
             if (line.equals("User-agent: *"))
